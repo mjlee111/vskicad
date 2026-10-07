@@ -10,6 +10,14 @@
     "email": "menggu1234@naver.com"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mjlee111/vskicad.git"
+  },
+  "homepage": "https://github.com/mjlee111/vskicad#readme",
+  "bugs": {
+    "url": "https://github.com/mjlee111/vskicad/issues"
+  },
   "private": true,
   "engines": {
     "vscode": "^1.85.0"

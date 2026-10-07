@@ -1,3 +1,5 @@
+<p align="center"><img src="media/icon.png" alt="KiCad Preview logo" width="128"></p>
+
 # KiCad Preview for Visual Studio Code
 
 Preview KiCad schematics and PCBs, in 2D and 3D, inside Visual Studio Code.
