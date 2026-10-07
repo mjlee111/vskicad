@@ -1,0 +1,149 @@
+/* Layout and theming for the KiCad preview webview. Colors follow the VS Code theme. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--vscode-editor-background);
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size, 13px);
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.hidden { display: none !important; }
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--vscode-panel-border, rgba(128,128,128,.35));
+  flex-wrap: wrap;
+  min-height: 30px;
+}
+.toolbar .group { display: flex; align-items: center; gap: 4px; }
+.toolbar .spacer { flex: 1; }
+
+.btn {
+  background: var(--vscode-button-secondaryBackground, #3a3d41);
+  color: var(--vscode-button-secondaryForeground, #fff);
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 3px 9px;
+  font: inherit;
+  cursor: pointer;
+  line-height: 1.3;
+}
+.btn:hover { background: var(--vscode-button-secondaryHoverBackground, #45494e); }
+.btn:focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: 1px; }
+.btn.active {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+.btn:disabled { opacity: 0.6; cursor: default; }
+.btn.small { padding: 1px 6px; font-size: 0.9em; }
+
+.check { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; padding: 0 4px; }
+
+.page-select {
+  background: var(--vscode-dropdown-background);
+  color: var(--vscode-dropdown-foreground);
+  border: 1px solid var(--vscode-dropdown-border, transparent);
+  padding: 3px 6px;
+  font: inherit;
+  max-width: 50vw;
+}
+
+.main { flex: 1; display: flex; min-height: 0; }
+
+.sidebar {
+  width: 210px;
+  flex: none;
+  overflow-y: auto;
+  border-right: 1px solid var(--vscode-panel-border, rgba(128,128,128,.35));
+  padding: 6px 4px;
+  box-sizing: border-box;
+}
+.sidebar-head {
+  display: flex; align-items: center; gap: 4px;
+  font-weight: 600; padding: 2px 4px 6px;
+}
+.sidebar-head span { flex: 1; }
+.layer-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 2px 4px; border-radius: 3px; cursor: pointer;
+  white-space: nowrap;
+}
+.layer-row:hover { background: var(--vscode-list-hoverBackground); }
+.layer-name { overflow: hidden; text-overflow: ellipsis; }
+.swatch {
+  width: 12px; height: 12px; flex: none; border-radius: 2px;
+  border: 1px solid rgba(128,128,128,.6);
+}
+
+.pane { position: relative; flex: 1; min-width: 0; }
+.viewport { position: absolute; inset: 0; overflow: hidden; }
+.viewport-2d { cursor: grab; touch-action: none; }
+.viewport-2d.dragging { cursor: grabbing; }
+.viewport-2d.bg-sch { background: #7f7f7f; }
+.viewport-2d.bg-pcb { background: #001023; }
+.viewport-3d {
+  /* Matches the WebGL background gradient shown once the scene renders. */
+  background: linear-gradient(#4a5366, #15181f);
+}
+.viewport-3d canvas { display: block; width: 100%; height: 100%; }
+.svg-root { display: block; width: 100%; height: 100%; }
+
+.overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 10px;
+}
+.overlay.busy {
+  background: rgba(0,0,0,.25);
+  color: #fff;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+.spinner {
+  width: 28px; height: 28px;
+  border: 3px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.overlay.error {
+  background: var(--vscode-editor-background);
+  padding: 24px;
+  box-sizing: border-box;
+}
+.error-title { font-size: 1.2em; font-weight: 600; color: var(--vscode-errorForeground); }
+.error-text {
+  max-width: 90%; max-height: 50%; overflow: auto;
+  white-space: pre-wrap; word-break: break-word;
+  background: var(--vscode-textCodeBlock-background, rgba(128,128,128,.15));
+  padding: 10px; border-radius: 4px;
+  font-family: var(--vscode-editor-font-family);
+}
+.error-actions { display: flex; gap: 6px; }
+
+.statusbar {
+  display: flex; gap: 12px; align-items: center;
+  padding: 2px 8px;
+  border-top: 1px solid var(--vscode-panel-border, rgba(128,128,128,.35));
+  font-size: 0.9em;
+  color: var(--vscode-descriptionForeground);
+  min-height: 20px;
+}
+.status-msg { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.statusbar a.warn { color: var(--vscode-editorWarning-foreground, #cca700); }
+.swatch.pending { border-style: dashed; }
+.svg-stage { position: absolute; inset: 0; contain: strict; transform-origin: 0 0; }

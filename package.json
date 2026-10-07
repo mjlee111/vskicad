@@ -1,0 +1,216 @@
+{
+  "name": "vskicad",
+  "displayName": "KiCad Preview",
+  "description": "Preview KiCad schematics and PCBs (2D and 3D) inside Visual Studio Code using kicad-cli.",
+  "icon": "media/icon.png",
+  "version": "0.1.0",
+  "publisher": "menggu1234",
+  "author": {
+    "name": "Myeongjin Lee",
+    "email": "menggu1234@naver.com"
+  },
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "kicad",
+    "schematic",
+    "pcb",
+    "3d",
+    "preview"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "vskicad.schematic",
+        "displayName": "KiCad Schematic Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.kicad_sch"
+          }
+        ],
+        "priority": "default"
+      },
+      {
+        "viewType": "vskicad.pcb",
+        "displayName": "KiCad PCB Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.kicad_pcb"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "commands": [
+      {
+        "command": "vskicad.openPreview",
+        "title": "Open Preview",
+        "category": "KiCad",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "vskicad.openPreviewToSide",
+        "title": "Open Preview to the Side",
+        "category": "KiCad",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "vskicad.refresh",
+        "title": "Refresh Preview",
+        "category": "KiCad",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "vskicad.show3D",
+        "title": "Show PCB 3D View",
+        "category": "KiCad"
+      },
+      {
+        "command": "vskicad.showCliInfo",
+        "title": "Show kicad-cli Info",
+        "category": "KiCad"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "vskicad.openPreviewToSide",
+          "when": "(resourceExtname == .kicad_sch || resourceExtname == .kicad_pcb) && activeCustomEditorId != vskicad.schematic && activeCustomEditorId != vskicad.pcb",
+          "group": "navigation"
+        },
+        {
+          "command": "vskicad.refresh",
+          "when": "activeCustomEditorId == vskicad.schematic || activeCustomEditorId == vskicad.pcb",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "vskicad.openPreview",
+          "when": "resourceExtname == .kicad_sch || resourceExtname == .kicad_pcb",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "vskicad.refresh",
+          "when": "activeCustomEditorId == vskicad.schematic || activeCustomEditorId == vskicad.pcb"
+        },
+        {
+          "command": "vskicad.show3D",
+          "when": "activeCustomEditorId == vskicad.pcb"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "KiCad Preview",
+      "properties": {
+        "vskicad.cliPath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine-overridable",
+          "markdownDescription": "Full path to `kicad-cli` (`kicad-cli.exe` on Windows). Leave empty to auto-detect from PATH, standard install folders and Flatpak."
+        },
+        "vskicad.autoRefresh": {
+          "type": "boolean",
+          "default": true,
+          "description": "Re-export the preview when the KiCad file changes on disk."
+        },
+        "vskicad.timeoutSeconds": {
+          "type": "number",
+          "default": 180,
+          "minimum": 10,
+          "description": "Maximum time for a single kicad-cli export."
+        },
+        "vskicad.schematic.theme": {
+          "type": "string",
+          "default": "",
+          "description": "KiCad color theme name for schematic export. Empty uses the schematic editor settings."
+        },
+        "vskicad.pcb.layers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Layers exported for the 2D PCB view, using untranslated names such as `F.Cu` or `Edge.Cuts`. Empty exports all copper layers plus `F/B.SilkS`, `F/B.Mask`, `F/B.Fab` and `Edge.Cuts`. Layers not defined in the board are skipped."
+        },
+        "vskicad.pcb.theme": {
+          "type": "string",
+          "default": "",
+          "description": "KiCad color theme name for PCB 2D export. Empty uses the PCB editor settings."
+        },
+        "vskicad.pcb.drillShape": {
+          "type": "string",
+          "enum": [
+            "none",
+            "small",
+            "actual"
+          ],
+          "default": "actual",
+          "description": "How pad and via drill holes are drawn in the 2D PCB view."
+        },
+        "vskicad.3d.substituteModels": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use STEP/IGS models in place of VRML models with the same name (kicad-cli --subst-models)."
+        },
+        "vskicad.3d.includeTracks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include tracks and vias in the 3D view. Increases export time."
+        },
+        "vskicad.3d.includePads": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include pads in the 3D view. Increases export time."
+        },
+        "vskicad.3d.includeZones": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include copper zones in the 3D view. Increases export time."
+        },
+        "vskicad.3d.includeSilkscreen": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include silkscreen in the 3D view. Increases export time."
+        },
+        "vskicad.3d.includeSoldermask": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include soldermask in the 3D view. Increases export time."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc -p . --noEmit && tsc -p webview --noEmit",
+    "test:core": "node esbuild.mjs && node scripts/test-core.mjs",
+    "package": "node esbuild.mjs --production && vsce package --no-dependencies --allow-missing-repository"
+  },
+  "dependencies": {
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.19.130",
+    "@types/three": "0.186.0",
+    "@types/vscode": "1.85.0",
+    "@vscode/vsce": "2.32.0",
+    "esbuild": "0.28.2",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "undici": "6.29.0"
+  }
+}
