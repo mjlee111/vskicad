@@ -75,7 +75,7 @@ What you can do:
 
 ```bash
 $ kicad-cli version                                # must print 10.x
-$ code --install-extension vskicad-0.1.0.vsix
+$ code --install-extension mjlee111.vskicad
 $ code my-board.kicad_pcb                          # opens the preview
 ```
 
@@ -87,10 +87,10 @@ Click **3D** in the preview toolbar for the 3D view. If the preview says that `k
 
 ## 1. Package Layout
 
-The delivery is one file, `vskicad-0.1.0.vsix`. It contains:
+The extension is published on the Visual Studio Marketplace as `mjlee111.vskicad`. Each version is one package file, `vskicad-<version>.vsix`. It contains:
 
 ```
-vskicad-0.1.0.vsix
+vskicad-<version>.vsix
 └── extension/
     ├── package.json         manifest: commands, editors, settings
     ├── README.md            this document
@@ -133,17 +133,21 @@ Install KiCad 10 from the official installer at kicad.org. Keep the default loca
 
 ### 2.3 Install the extension (once per machine)
 
-```bash
-$ code --install-extension vskicad-0.1.0.vsix
-```
-
-Alternatively, open the Extensions view, choose **...** > **Install from VSIX...**, and select the file.
-
-To update to a new build with the same version number, add `--force`:
+Open the Extensions view, search for **KiCad Preview** (publisher `mjlee111`), and click **Install**. Or, from a terminal:
 
 ```bash
-$ code --install-extension vskicad-0.1.0.vsix --force
+$ code --install-extension mjlee111.vskicad
 ```
+
+VS Code updates the extension automatically when a new version is published.
+
+**Offline install from a `.vsix` file**
+
+```bash
+$ code --install-extension vskicad-<version>.vsix
+```
+
+Alternatively, open the Extensions view, choose **...** > **Install from VSIX...**, and select the file. To reinstall a build with the same version number, add `--force`.
 
 ### 2.4 Check
 
@@ -162,7 +166,7 @@ kicad-cli 10.0.5 found via PATH: /usr/bin/kicad-cli
 ### 2.5 Uninstall
 
 ```bash
-$ code --uninstall-extension menggu1234.vskicad
+$ code --uninstall-extension mjlee111.vskicad
 ```
 
 To remove leftover temporary files as well, delete the extension's storage folder (§5).
@@ -273,8 +277,8 @@ The path must point to the executable. A `.bat` or `.cmd` wrapper does not work,
 
 | Platform | Storage folder |
 |---|---|
-| Windows | `%APPDATA%\Code\User\globalStorage\menggu1234.vskicad\` |
-| Ubuntu | `~/.config/Code/User/globalStorage/menggu1234.vskicad/` |
+| Windows | `%APPDATA%\Code\User\globalStorage\mjlee111.vskicad\` |
+| Ubuntu | `~/.config/Code/User/globalStorage/mjlee111.vskicad/` |
 
 Inside it, `previews/` holds the SVG and GLB exports and `snapshots/` holds snapshot images.
 
