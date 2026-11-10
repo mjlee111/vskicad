@@ -34,7 +34,8 @@ export class CliError extends Error {
   }
 }
 
-export const SUPPORTED_MAJOR = 10;
+/** KiCad major versions the extension is verified with, oldest first. */
+export const SUPPORTED_MAJORS: readonly number[] = [9, 10];
 const FLATPAK_APP_ID = 'org.kicad.KiCad';
 const VERSION_TIMEOUT_MS = 20000;
 
@@ -198,5 +199,6 @@ export async function resolveCli(configuredPath: string, log: (line: string) => 
     }
   }
   const detail = tried.length ? `\nTried:\n${tried.join('\n')}` : '';
-  throw new CliError(`kicad-cli was not found. Install KiCad ${SUPPORTED_MAJOR}.x or set 'vskicad.cliPath'.${detail}`);
+  const versions = SUPPORTED_MAJORS.map((m) => `${m}.x`).join(' or ');
+  throw new CliError(`kicad-cli was not found. Install KiCad ${versions}, or set 'vskicad.cliPath'.${detail}`);
 }

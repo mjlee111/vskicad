@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { KicadCli, OutputStore, SUPPORTED_MAJOR, purgeOldFiles, resolveCli } from './core';
+import { KicadCli, OutputStore, SUPPORTED_MAJORS, purgeOldFiles, resolveCli } from './core';
 import { ControllerRegistry, PreviewProvider, Services } from './preview';
 
 const VIEW_TYPES = { sch: 'vskicad.schematic', pcb: 'vskicad.pcb' } as const;
@@ -28,10 +28,11 @@ export function activate(context: vscode.ExtensionContext): void {
       const configured = vscode.workspace.getConfiguration('vskicad').get<string>('cliPath', '');
       cliPromise = resolveCli(configured, (l) => log.appendLine(l)).then(
         (cli) => {
-          if (cli.major !== SUPPORTED_MAJOR && !versionWarned) {
+          if (!SUPPORTED_MAJORS.includes(cli.major) && !versionWarned) {
             versionWarned = true;
+            const versions = SUPPORTED_MAJORS.map((m) => `${m}.x`).join(' and ');
             void vscode.window.showWarningMessage(
-              `KiCad Preview is verified with KiCad ${SUPPORTED_MAJOR}.x only. Found kicad-cli ${cli.version}; previews may fail.`,
+              `KiCad Preview is verified with KiCad ${versions} only. Found kicad-cli ${cli.version}; previews may fail.`,
             );
           }
           return cli;

@@ -5,7 +5,7 @@
 Preview KiCad schematics and PCBs, in 2D and 3D, inside Visual Studio Code.
 
 ![VS Code](https://img.shields.io/badge/VS%20Code-%E2%89%A5%201.85-007ACC)
-![KiCad](https://img.shields.io/badge/KiCad-10.x-314CB0)
+![KiCad](https://img.shields.io/badge/KiCad-9.x%20%7C%2010.x-314CB0)
 ![OS](https://img.shields.io/badge/OS-Windows%20%7C%20Ubuntu-lightgrey)
 ![Language](https://img.shields.io/badge/language-TypeScript-3178C6)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -14,7 +14,7 @@ Author: Myeongjin Lee (menggu1234@naver.com)
 
 ## Overview
 
-KiCad Preview opens `.kicad_sch` and `.kicad_pcb` files as read-only previews. It does not draw KiCad files itself. It calls `kicad-cli` from your KiCad installation, so every preview matches what KiCad produces. KiCad 10.x must be installed on the machine that runs the extension.
+KiCad Preview opens `.kicad_sch` and `.kicad_pcb` files as read-only previews. It does not draw KiCad files itself. It calls `kicad-cli` from your KiCad installation, so every preview matches what KiCad produces. KiCad 9.x or 10.x must be installed on the machine that runs the extension.
 
 What you can do:
 
@@ -36,10 +36,11 @@ What you can do:
 | Platform | Status | Notes |
 |---|---|---|
 | Ubuntu 24.04, KiCad 10.0.5 (PPA) | ![tested](https://img.shields.io/badge/-tested-brightgreen) | Development platform. Core integration tests and viewer checks run here. |
-| Windows 10/11, KiCad 10.x | ![not tested](https://img.shields.io/badge/-not%20tested-yellow) | Supported by design. Only the `kicad-cli` detection logic has been tested. |
+| Ubuntu, KiCad 9.0.9 (Docker image `kicad/kicad:9.0-full`) | ![tested](https://img.shields.io/badge/-tested-brightgreen) | Core integration tests pass. Output file names, 3D model structure and snapshot framing match 10.0.5. Not yet checked in the VS Code UI. |
+| Windows 10/11, KiCad 9.x or 10.x | ![not tested](https://img.shields.io/badge/-not%20tested-yellow) | Supported by design. Only the `kicad-cli` detection logic has been tested. |
 | Ubuntu, KiCad from Flatpak | ![not tested](https://img.shields.io/badge/-not%20tested-yellow) | Detected automatically. The Flatpak sandbox may block writes to the output folder. |
 | VS Code Remote (SSH, WSL) | ![not tested](https://img.shields.io/badge/-not%20tested-yellow) | The extension runs on the remote host, so KiCad must be installed there. |
-| KiCad 9.x or older | ![not supported](https://img.shields.io/badge/-not%20supported-red) | The extension warns and tries anyway. Results are not verified. |
+| KiCad 8.x or older | ![not supported](https://img.shields.io/badge/-not%20supported-red) | The extension warns and tries anyway. Results are not verified. |
 | macOS | ![not supported](https://img.shields.io/badge/-not%20supported-red) | Not in scope. There is no automatic `kicad-cli` detection. |
 
 ## Contents
@@ -74,7 +75,7 @@ What you can do:
 ## Quick Start
 
 ```bash
-$ kicad-cli version                                # must print 10.x
+$ kicad-cli version                                # must print 9.x or 10.x
 $ code --install-extension mjlee111.vskicad
 $ code my-board.kicad_pcb                          # opens the preview
 ```
@@ -110,7 +111,7 @@ The extension has no runtime dependencies other than VS Code and KiCad.
 | Item | Requirement |
 |---|---|
 | VS Code | 1.85 or later |
-| KiCad | 10.x, including `kicad-cli` |
+| KiCad | 9.x or 10.x, including `kicad-cli` |
 | KiCad 3D models | Needed for component models in the 3D view |
 | GPU | WebGL 2 in VS Code, which current GPUs and drivers provide |
 | Network | Not used |
@@ -125,11 +126,11 @@ $ sudo apt update
 $ sudo apt install kicad kicad-packages3d
 ```
 
-`kicad-cli` is part of the `kicad` package and installs to `/usr/bin/kicad-cli`.
+For KiCad 9, use `ppa:kicad/kicad-9.0-releases` instead. `kicad-cli` is part of the `kicad` package and installs to `/usr/bin/kicad-cli`.
 
 **Windows**
 
-Install KiCad 10 from the official installer at kicad.org. Keep the default location. The extension looks for `C:\Program Files\KiCad\<version>\bin\kicad-cli.exe`.
+Install KiCad 10 (or 9) from the official installer at kicad.org. Keep the default location. The extension looks for `C:\Program Files\KiCad\<version>\bin\kicad-cli.exe`.
 
 ### 2.3 Install the extension (once per machine)
 
@@ -219,7 +220,7 @@ Board layers are drawn opaque, as in KiCad's own renderer. Copper under the sold
 - The image opens in a new tab beside the preview. Choose **Save As...** in the notification to keep it. The default name is `<board>-3d.png` in the board's folder.
 - Images that you do not save are deleted after 24 hours.
 - The rotation and zoom of your view are carried over. Panning is not: KiCad always renders around the board center.
-- The image is requested 1920 pixels wide at the aspect ratio of the 3D view. `kicad-cli` 10.0.5 returns a slightly smaller image, for example 1904 x 784.
+- The image is requested 1920 pixels wide at the aspect ratio of the 3D view. `kicad-cli` returns a slightly smaller image, for example 1904 x 784 with 10.0.5.
 - Components, silkscreen and colors in the snapshot follow KiCad's own 3D viewer settings, not the `vskicad.3d.*` settings.
 
 ## 4. Configuration
@@ -288,13 +289,14 @@ Messages appear in a notification, in the preview, or in the **KiCad Preview** o
 
 | Message | Cause | Fix |
 |---|---|---|
-| `kicad-cli was not found. Install KiCad 10.x or set 'vskicad.cliPath'.` | KiCad is not installed, or is installed in a location not listed in §4.2 | Install KiCad (§2.2) or set `vskicad.cliPath` (§4.2) |
+| `kicad-cli was not found. Install KiCad 9.x or 10.x, or set 'vskicad.cliPath'.` | KiCad is not installed, or is installed in a location not listed in §4.2 | Install KiCad (§2.2) or set `vskicad.cliPath` (§4.2) |
 | `Configured kicad-cli could not be run: <path>` | `vskicad.cliPath` points to a missing file, a wrapper script, or a non-executable file | Point it to `kicad-cli` or `kicad-cli.exe` itself, or clear it to use detection |
-| `KiCad Preview is verified with KiCad 10.x only. Found kicad-cli <version>; previews may fail.` | An older or newer KiCad was found | Install KiCad 10.x, or set `vskicad.cliPath` to a 10.x `kicad-cli` |
+| `KiCad Preview is verified with KiCad 9.x and 10.x only. Found kicad-cli <version>; previews may fail.` | An older or newer KiCad was found | Install KiCad 9.x or 10.x, or set `vskicad.cliPath` to a 9.x or 10.x `kicad-cli` |
 | `<n> 3D model(s) not found (see log)` in the 3D status bar | The board refers to models through a path variable that KiCad does not define, such as `${KICAD6_3DMODEL_DIR}` or a custom variable | Define the variable in KiCad under **Preferences > Configure Paths**, then click **Refresh**. Setting a shell environment variable with the same name has no effect on `kicad-cli` 10.0.5. |
 | `Only files on disk can be previewed (scheme '<scheme>').` | The file comes from a virtual source, such as a Git comparison view | Open the file from the Explorer |
 | `Timed out after <n> s.` | The export took longer than `vskicad.timeoutSeconds` | Raise `vskicad.timeoutSeconds`, or disable `vskicad.3d.include*` settings |
 | `No exportable layers found in the board file.` | `vskicad.pcb.layers` names layers that the board does not define | Use untranslated layer names such as `F.Cu`, or set the list to `[]` |
+| `kicad-cli exited with code 3.` followed by `Failed to load board` or `Failed to load schematic` | The file was saved by a newer KiCad than the `kicad-cli` in use, for example a KiCad 10 file with KiCad 9 | Install the KiCad version that saved the file, or set `vskicad.cliPath` to its `kicad-cli` |
 | `kicad-cli exited with code <n>.` | KiCad could not load or export the file | Open the file in KiCad to check it, and read the output channel for KiCad's message |
 | `KiCad snapshot failed: <reason>` | The raytraced render failed or timed out | See the output channel. Raise `vskicad.timeoutSeconds` for large boards. |
 
@@ -319,7 +321,7 @@ Measured on Ubuntu 24.04, KiCad 10.0.5, AMD Ryzen 9 9900X with integrated graphi
 - Only files on a local or remote disk can be previewed. Virtual documents are not supported.
 - The PCB preview reacts to changes of the board file only. Use **Refresh** after changing 3D models or libraries.
 - 2D coordinates are not shown. The 2D view is cropped to the board area.
-- The snapshot rotation and zoom mapping was established with `kicad-cli` 10.0.5 and may differ in other versions.
+- The snapshot rotation and zoom mapping was established with `kicad-cli` 10.0.5 and checked with 9.0.9. It may differ in other versions.
 - Flatpak KiCad, Windows and VS Code Remote have not been tested (see Supports).
 
 ## 9. License

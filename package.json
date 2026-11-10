@@ -3,7 +3,7 @@
   "displayName": "KiCad Preview",
   "description": "Preview KiCad schematics and PCBs (2D and 3D) inside Visual Studio Code using kicad-cli.",
   "icon": "media/icon.png",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "mjlee111",
   "author": {
     "name": "Myeongjin Lee",

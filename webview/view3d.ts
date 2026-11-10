@@ -184,7 +184,8 @@ export class View3D {
    * Zoom: kicad-cli zoom scales linearly with apparent size and does not depend on the view
    * direction. At zoom 1 the board center is drawn at about min(H / max(boardW, boardH),
    * W / boardW) pixels per mm. Both were established by comparing kicad-cli 10.0.5 renders
-   * with this viewer. Panning is not transferred: kicad-cli rotates about the board center.
+   * with this viewer; kicad-cli 9.0.9 gives the same framing for the same rotation and zoom.
+   * Panning is not transferred: kicad-cli rotates about the board center.
    */
   getKicadView(imageWidth: number, imageHeight: number): KicadView {
     const toBoard = (v: THREE.Vector3) => new THREE.Vector3(v.x, -v.z, v.y);

@@ -1,6 +1,7 @@
 // Integration tests for the VS Code-free core against an installed kicad-cli and KiCad demo projects.
 // Usage: npm run test:core            (uses KiCad demos from the default install location)
 //        KICAD_DEMOS=<dir> npm run test:core
+//        KICAD_CLI=<path> npm run test:core   (uses that kicad-cli instead of auto-detection)
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import * as fs from 'node:fs';
@@ -42,9 +43,10 @@ const run = { timeoutMs: 180_000 };
 const logs = [];
 let cli;
 
-await test('resolveCli auto-detects kicad-cli 10.x', async () => {
-  cli = await core.resolveCli('', (l) => logs.push(l));
-  assert.equal(cli.major, 10, `got ${cli.version}`);
+await test('resolveCli finds a supported kicad-cli', async () => {
+  cli = await core.resolveCli(process.env.KICAD_CLI ?? '', (l) => logs.push(l));
+  assert.ok(core.SUPPORTED_MAJORS.includes(cli.major), `got ${cli.version}`);
+  console.log(`     kicad-cli ${cli.version} (${cli.source})`);
 });
 
 await test('resolveCli with bad configured path fails without fallback', async () => {
@@ -137,7 +139,7 @@ await test('renderSnapshot writes a PNG for a rotated view (negative angles)', a
   await core.renderSnapshot(cli, PCB, out, { rotate: [-50, 0, 30], zoom: 1.2, width: 320, height: 200 }, run);
   const buf = fs.readFileSync(out);
   assert.equal(buf.toString('ascii', 1, 4), 'PNG');
-  // kicad-cli 10.0.5 returns a slightly smaller image than requested (320x200 -> 312x168).
+  // kicad-cli 9.0.9 and 10.0.5 return a slightly smaller image than requested (320x200 -> 312x168).
   const w = buf.readUInt32BE(16);
   const h = buf.readUInt32BE(20);
   assert.ok(w > 200 && w <= 320 && h > 100 && h <= 200, `got ${w}x${h}`);
